@@ -40,12 +40,13 @@ let videoHeroName = hero?.heroData?.name.replace("npc_dota_hero_", "");
 
         <heroMedia :heroImage="heroImage" :heroVideo="heroVideo" :key="propHero?.heroData?.id" />
 
-        <div class="z-1 relative">
-        <div class="flex flex-row">
-            <h1>{{ propHero.heroData?.localized_name }} -</h1>
-            <img :src="`https://cdn.cloudflare.steamstatic.com/${propHero?.heroData?.icon}`" />
+        <div class="absolute top-[500px] left-[40px]">
+            <div class="flex flex-row items-center gap-2">
+                <h1 class="text-lg font-bold">{{ propHero.heroData?.localized_name }} -</h1>
+                <img class="h-5 w-5" :src="`https://cdn.cloudflare.steamstatic.com/${propHero?.heroData?.icon}`" />
+            </div>
         </div>
-        </div>
+
     </div>
 
 
