@@ -1,30 +1,47 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { onMounted, reactive, ref } from "vue";
+import PokeCardVue  from "./components/PokeCard.vue"
+import axios from "axios"
+
+const heroStatsData = reactive({
+  responseData: null,
+  loading: true,
+  error: null
+})
+
+const fetchApi = async () => {
+  try {
+    const { data } = await axios.get('https://api.opendota.com/api/heroStats');
+    heroStatsData.responseData = data;
+    heroStatsData.loading = false;
+  } catch (error) {
+    heroStatsData.error = error;
+    console.log("ERRO:", error.message);
+  }
+}
+const currentHero = ref();
+const currentIndex = ref(0);
+
+onMounted(async () => {
+  await fetchApi();
+  currentHero.value = heroStatsData?.responseData[currentIndex.value]
+})
+
+const nextHero = () => {
+  currentIndex.value = currentIndex.value + 1;
+  currentHero.value =  heroStatsData?.responseData[currentIndex.value]
+}
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+
+  <main class="h-screen flex flex-col items-center justify-center ">
+      <PokeCardVue v-if="heroStatsData?.responseData" :heroData="currentHero" />
+      <button class="button-primary bg-green-500" @click="nextHero">Next</button>
+  </main>
+
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+
 </style>
